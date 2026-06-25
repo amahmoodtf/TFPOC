@@ -20,14 +20,18 @@ namespace SolrWebApplicationClient
 
             try
             {
-                var connectionFactory = new SolrConnectionFactory(true, "aci-pimsolrc01.teleflora.org:2181", "dev-user1", "SolrRocks");
-                connectionFactory.AddIndex<Product>("product");
-                connectionFactory.AddIndex<RecipeItem>("recipeitem");
+                var connectionFactory1 = new SolrConnectionFactory(true, "aci-pimsolrc01.teleflora.org:2181", "dev-user1", "SolrRocks");
 
-                connectionFactory.Start<Product>();
-                connectionFactory.Start<RecipeItem>();
+                connectionFactory1.AddIndex<SolrProduct>("product");                
+                connectionFactory1.Start<SolrProduct>();
+                SolrConnections.SolrProductConnection = connectionFactory1;
 
-                SolrConnections.SolrMYTFConnection = connectionFactory;
+                var connectionFactory2 = new SolrConnectionFactory(true, "aci-pimsolrc01.teleflora.org:2181", "dev-user1", "SolrRocks");
+                connectionFactory2.AddIndex<SolrRecipeItem>("recipeitem");
+                connectionFactory2.Start<SolrRecipeItem>();
+                SolrConnections.SolrRecipeConnection = connectionFactory2;
+
+                
             }
             catch (Exception ex)
             {

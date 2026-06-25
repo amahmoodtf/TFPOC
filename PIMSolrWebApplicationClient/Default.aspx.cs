@@ -25,12 +25,11 @@ namespace SolrWebApplicationClient
         public static string pIMProductsSolrUrl = "https://aci-mtfsolrc01.teleflora.org:8984/solr/products";
         public static string pIMRecipeItemSolrUrl = "https://aci-mtfsolrc01.teleflora.org:8984/solr/recipeitem";
 
-        public static string mYTfCollectionName = "myteleflora";
-        public static string pIMProductCollectionName = "Product";
-        public static string pIMRecipeItemCollectionName = "RecipeItem";
+        public static string pIMProductCollectionName = "product";
+        public static string pIMRecipeItemCollectionName = "recipeItem";
         protected void Page_Load(object sender, EventArgs e)
         {
-            QueryMyTFSolr(isCloudMode);
+            QueryPIMSolr(isCloudMode);
 
         }
         private void AddDocToMyTFSolrIndex(bool isCloudMode)
@@ -43,22 +42,22 @@ namespace SolrWebApplicationClient
             //var connectionFactory = new SolrConnectionFactory(isCloudMode, zookeeperConnectionString, userName, password);
             //connectionFactory.AddIndex<IndexItem>(mYTfCollectionName);
             //connectionFactory.Start();
-            var solrOps = SolrConnections.SolrMYTFConnection.Resolve<ISolrOperations<IndexItem>>();
+            //var solrOps = SolrConnections.SolrMYTFConnection.Resolve<ISolrOperations<IndexItem>>();
             //var solrOps = Global.SolrConnection.Resolve<ISolrOperations<IndexItem>>();
 
-            var item = new IndexItem
-            {
-                Id = "1",
-                Url = "https://www.microsoft.com/solr",
-                Title = "Microsoft Solr Client",
-                Description = "This is a Solr client library for .NET."
-            };
-            solrOps.Add(item);
-            solrOps.Commit();
+            //var item = new IndexItem
+            //{
+            //    Id = "1",
+            //    Url = "https://www.microsoft.com/solr",
+            //    Title = "Microsoft Solr Client",
+            //    Description = "This is a Solr client library for .NET."
+            //};
+            //solrOps.Add(item);
+            //solrOps.Commit();
 
-            Console.WriteLine("Document added successfully.");
+            //Console.WriteLine("Document added successfully.");
         }
-        private void QueryMyTFSolr(bool isCloudMode)
+        private void QueryPIMSolr(bool isCloudMode)
         {
             if (!isCloudMode)
             {
@@ -69,8 +68,8 @@ namespace SolrWebApplicationClient
             connectionFactory.AddIndex<IndexItem>(mYTfCollectionName);
             connectionFactory.Start();*/
 
-            var resolvedOperation = SolrConnections.SolrProductConnection.Resolve<ISolrOperations<Product>>();
-            var resolvedOperation2 = SolrConnections.SolrRecipeConnection.Resolve<ISolrOperations<RecipeItem>>();
+            var resolvedOperation = SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrProduct>>();
+            var resolvedOperation2 = SolrConnections.SolrRecipeConnection.Resolve<ISolrOperations<SolrRecipeItem>>();
 
             var results = resolvedOperation.Query(new SolrQueryByField("title", "design"));           
             foreach (var result in results)
