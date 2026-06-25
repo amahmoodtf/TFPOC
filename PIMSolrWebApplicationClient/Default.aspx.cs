@@ -68,16 +68,17 @@ namespace SolrWebApplicationClient
             connectionFactory.AddIndex<IndexItem>(mYTfCollectionName);
             connectionFactory.Start();*/
 
-            var resolvedOperation = SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrProduct>>();
-            var resolvedOperation2 = SolrConnections.SolrRecipeConnection.Resolve<ISolrOperations<SolrRecipeItem>>();
+            var solrOps1 = SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrProduct>>();
+            
 
-            var results = resolvedOperation.Query(new SolrQueryByField("title", "design"));           
+            var results = solrOps1.Query(new SolrQueryByField("Id", "1"));           
             foreach (var result in results)
             {
                 Response.Write($"ID: {result.Id}, Desc: {result.Id}");
             }
 
-            var results2 = resolvedOperation2.Query(new SolrQueryByField("title", "design"));
+            var solrOps2 = SolrConnections.SolrRecipeConnection.Resolve<ISolrOperations<SolrRecipeItem>>();
+            var results2 = solrOps2.Query(new SolrQueryByField("title", "design"));
             foreach (var result in results2)
             {
                 Response.Write($"ID: {result.Id}, Desc: {result.Id}");

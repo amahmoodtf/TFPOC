@@ -14,8 +14,8 @@ namespace MySolrCore
         private static string zookeeperConnectionString = "aci-pimsolrc01.teleflora.org:2181";
         private static string userName = "dev-user1";
         private static string password = "SolrRocks";
-        private static string ProductSolrCollection = "product";
-        private static string RecipeSolrCollection = "recipe";
+        private static string ProductSolrCollection = "products";
+        private static string RecipeSolrCollection = "recipeItems";
 
         private static ISolrOperations<SolrProduct> solrProductOperations;
         private static ISolrOperations<SolrRecipeItem> solrRecipeOperations;

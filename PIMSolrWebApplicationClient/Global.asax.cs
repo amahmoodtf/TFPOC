@@ -22,12 +22,12 @@ namespace SolrWebApplicationClient
             {
                 var connectionFactory1 = new SolrConnectionFactory(true, "aci-pimsolrc01.teleflora.org:2181", "dev-user1", "SolrRocks");
 
-                connectionFactory1.AddIndex<SolrProduct>("product");                
+                connectionFactory1.AddIndex<SolrProduct>("products");                
                 connectionFactory1.Start<SolrProduct>();
                 SolrConnections.SolrProductConnection = connectionFactory1;
 
                 var connectionFactory2 = new SolrConnectionFactory(true, "aci-pimsolrc01.teleflora.org:2181", "dev-user1", "SolrRocks");
-                connectionFactory2.AddIndex<SolrRecipeItem>("recipeitem");
+                connectionFactory2.AddIndex<SolrRecipeItem>("recipeItems");
                 connectionFactory2.Start<SolrRecipeItem>();
                 SolrConnections.SolrRecipeConnection = connectionFactory2;
 
