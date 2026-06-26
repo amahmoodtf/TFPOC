@@ -11,5 +11,8 @@ namespace MySolrCore
         public static SolrConnectionFactory SolrMYTFConnection { get; set; }
         public static SolrConnectionFactory SolrProductConnection { get; set; }
         public static SolrConnectionFactory SolrRecipeConnection { get; set; }
+        public static SolrConnectionFactory SolrIndexProductConnection { get; set; }
+        public static SolrConnectionFactory SolrIndexRecipeItemsConnection { get; set; }
+
     }
 }

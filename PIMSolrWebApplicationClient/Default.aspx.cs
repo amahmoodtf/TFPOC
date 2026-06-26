@@ -25,8 +25,8 @@ namespace SolrWebApplicationClient
         public static string pIMProductsSolrUrl = "https://aci-mtfsolrc01.teleflora.org:8984/solr/products";
         public static string pIMRecipeItemSolrUrl = "https://aci-mtfsolrc01.teleflora.org:8984/solr/recipeitem";
 
-        public static string pIMProductCollectionName = "product";
-        public static string pIMRecipeItemCollectionName = "recipeItem";
+        public static string pIMProductCollectionName = "products";
+        public static string pIMRecipeItemCollectionName = "recipeItems";
         protected void Page_Load(object sender, EventArgs e)
         {
             QueryPIMSolr(isCloudMode);
@@ -68,20 +68,22 @@ namespace SolrWebApplicationClient
             connectionFactory.AddIndex<IndexItem>(mYTfCollectionName);
             connectionFactory.Start();*/
 
-            var solrOps1 = SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrProduct>>();
-            
+            //var solrOps1 = SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrProduct>>();
+            //var solrOps1 = SolrMasterOperationsCache.GetSolrMasterProductOperations(PIMSolrCore.PIMSolrProductCollection);
+            var solrOps1 = PIMSolrOperationsCache<SolrProduct>.GetSolrOperations(PIMSolrCore.PIMSolrProductCollection);
 
-            var results = solrOps1.Query(new SolrQueryByField("Id", "1"));           
-            foreach (var result in results)
+
+            var results = solrOps1.Query(new SolrQueryByField("occasion", "other"));
+            if (results != null)
             {
-                Response.Write($"ID: {result.Id}, Desc: {result.Id}");
+                Response.Write($"Product Solr docs count: {results.Count}");
             }
 
             var solrOps2 = SolrConnections.SolrRecipeConnection.Resolve<ISolrOperations<SolrRecipeItem>>();
-            var results2 = solrOps2.Query(new SolrQueryByField("title", "design"));
-            foreach (var result in results2)
+            var results2 = solrOps2.Query(new SolrQueryByField("description", "rose"));
+            if (results2 != null)
             {
-                Response.Write($"ID: {result.Id}, Desc: {result.Id}");
+                Response.Write($"RecipeItem Solr docs count: {results2.Count}");
             }
         }
     }

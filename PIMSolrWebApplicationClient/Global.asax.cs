@@ -20,20 +20,20 @@ namespace SolrWebApplicationClient
 
             try
             {
-                var connectionFactory1 = new SolrConnectionFactory(true, "aci-pimsolrc01.teleflora.org:2181", "dev-user1", "SolrRocks");
+                var connectionFactory1 = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
 
                 connectionFactory1.AddIndex<SolrProduct>("products");                
                 connectionFactory1.Start<SolrProduct>();
                 SolrConnections.SolrProductConnection = connectionFactory1;
 
-                var connectionFactory2 = new SolrConnectionFactory(true, "aci-pimsolrc01.teleflora.org:2181", "dev-user1", "SolrRocks");
+                var connectionFactory2 = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
                 connectionFactory2.AddIndex<SolrRecipeItem>("recipeItems");
                 connectionFactory2.Start<SolrRecipeItem>();
                 SolrConnections.SolrRecipeConnection = connectionFactory2;
 
                 
             }
-            catch (Exception ex)
+            catch
             {
                 // Log the exception or handle it as needed
 

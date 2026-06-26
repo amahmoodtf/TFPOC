@@ -393,6 +393,16 @@ namespace MySolrCore
         public string Id { get; set; }
     }
 
+    public class SolrIndexProduct : SolrProduct
+    {
+        public SolrIndexProduct() { }
+    }
+
+    public class SolrIndexRecipeItem : SolrRecipeItem
+    {
+        public SolrIndexRecipeItem() { }
+    }
+
     public class MyBookClass : ISearchableDocument
     {
         [SolrUniqueKey("id")]
@@ -401,5 +411,5 @@ namespace MySolrCore
         public string Title { get; set; } = string.Empty;
         [SolrField("author")]
         public string Author { get; set; } = string.Empty;
-    }
+    }    
 }
