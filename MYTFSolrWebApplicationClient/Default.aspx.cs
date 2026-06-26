@@ -43,8 +43,8 @@ namespace SolrWebApplicationClient
             //var connectionFactory = new SolrConnectionFactory(isCloudMode, zookeeperConnectionString, userName, password);
             //connectionFactory.AddIndex<IndexItem>(mYTfCollectionName);
             //connectionFactory.Start();
-            var solrOps = SolrConnections.SolrMYTFConnection.Resolve<ISolrOperations<IndexItem>>();
-            //var solrOps = Global.SolrConnection.Resolve<ISolrOperations<IndexItem>>();
+            //var solrOps = SolrConnections.SolrMYTFConnection.Resolve<ISolrOperations<IndexItem>>();
+            var solrOps = MYTFSolrOperationsCache<IndexItem>.GetSolrOperations(PIMSolrCore.PIMSolrProductCollection);
 
             var item = new IndexItem
             {
@@ -69,8 +69,10 @@ namespace SolrWebApplicationClient
             connectionFactory.AddIndex<IndexItem>(mYTfCollectionName);
             connectionFactory.Start();*/
 
-            var resolvedOperation = SolrConnections.SolrMYTFConnection.Resolve<ISolrOperations<IndexItem>>();            
-            var results = resolvedOperation.Query(new SolrQueryByField("title", "design"));
+            //var solrOps = SolrConnections.SolrMYTFConnection.Resolve<ISolrOperations<IndexItem>>();            
+            var solrOps = MYTFSolrOperationsCache<IndexItem>.GetSolrOperations(PIMSolrCore.PIMSolrProductCollection);
+
+            var results = solrOps.Query(new SolrQueryByField("title", "design"));
             
             foreach (var result in results)
             {

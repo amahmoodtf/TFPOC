@@ -20,7 +20,7 @@ namespace SolrWebApplicationClient
 
             try
             {
-                var connectionFactory = new SolrConnectionFactory(true, "aci-mtfsolrc01.teleflora.org:2181", "dev-user1", "SolrRocks");
+                var connectionFactory = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
                 connectionFactory.AddIndex<IndexItem>("myteleflora");
                 connectionFactory.Start<IndexItem>();
                 

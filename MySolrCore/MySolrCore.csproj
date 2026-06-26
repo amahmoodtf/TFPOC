@@ -83,12 +83,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\PIMSolrCore.cs" />
     <Compile Include="Business\PIMSolrOperationsCache.cs" />
     <Compile Include="Business\MYTFSolrOperationsCache.cs" />
     <Compile Include="Business\SolrBasicAuthOperations.cs" />
     <Compile Include="Business\SolrConnectionFactory.cs" />
     <Compile Include="Business\SolrConnections.cs" />
+    <Compile Include="Business\PIMSolrMasterOperationsCache.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="Helpers\Config.cs" />
     <Compile Include="Models\AllModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

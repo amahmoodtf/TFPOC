@@ -1,0 +1,44 @@
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio / VS Code
+.vs/
+.vscode/
+
+## Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+## NuGet
+packages/
+*.nupkg
+*.snupkg
+
+## ASP.NET generated files
+*.cache
+*.pdb
+
+## Publish output
+publish/
+artifacts/
+
+## Node (if used for frontend tooling)
+node_modules/
+
+## OS files
+.DS_Store
+Thumbs.db

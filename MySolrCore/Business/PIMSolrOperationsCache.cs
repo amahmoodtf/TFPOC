@@ -2,27 +2,26 @@
 using SolrNet.Impl;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Web.UI.WebControls;
 
 
 namespace MySolrCore
 {
     public static class PIMSolrOperationsCache<T>
-            where T : new()
+                where T : new()
     {
-        private static bool isCloundMode = true;
-        private static string zookeeperConnectionString = "aci-pimsolrc01.teleflora.org:2181";
-        private static string userName = "dev-user1";
-        private static string password = "SolrRocks";
-        private static string ProductSolrCollection = "products";
-        private static string RecipeSolrCollection = "recipeItems";
+        private static string recipeCollection = PIMSolrCore.PIMSolrRecipeItemsCollection; //"recipeItems";
 
-        private static ISolrOperations<SolrProduct> solrProductOperations;
-        private static ISolrOperations<SolrRecipeItem> solrRecipeOperations;
-
-        internal static ISolrOperations<T> GetSolrOperations(string core)
+        public static ISolrOperations<T> GetSolrOperations(string core)
         {
-            if (core == RecipeSolrCollection)
+            //use latest tls version
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+            //Trust All certificates
+            ServicePointManager.ServerCertificateValidationCallback = ((sender, certificate, chain, sslPolicyErrors) => true);
+
+            if (core == recipeCollection)
             {
                 return (ISolrOperations<T>)GetSolrRecipeOperations(core);
             }
@@ -32,91 +31,102 @@ namespace MySolrCore
             }
 
         }
-        internal static ISolrOperations<SolrProduct> GetSolrProductOperations(string core)
-        {
-            if (core == ProductSolrCollection)
-            {
-                try
-                {
-                    if (solrProductOperations == null)
-                    {
-                        var connectionFactory = new SolrConnectionFactory(isCloundMode, zookeeperConnectionString, userName, password);
-                        connectionFactory.AddIndex<SolrProduct>(ProductSolrCollection);
-                        connectionFactory.Start<SolrProduct>();
-
-                        solrProductOperations = connectionFactory.Resolve<ISolrOperations<SolrProduct>>();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Solr.Dup init error in GetSolrProductOperations() error [{ex.ToString()}]");
-
-                }
-            }
-            else
-            {
-                Debug.WriteLine("Solr.Dup Core requested has not been implemented " + core);
-                throw new NotImplementedException("Solr.Dup Core requested has not been implemented " + core);
-            }
-            return solrProductOperations;
-        }
-        internal static ISolrOperations<SolrRecipeItem> GetSolrRecipeOperations(string core)
+        public static ISolrOperations<SolrProduct> GetSolrProductOperations(string core)
         {
             //string solrUrl = Path.Combine(Helpers.Config.SolrMasterUrl, core).Replace("\\", "/");
-
-            if (core == RecipeSolrCollection)
+            if (core == PIMSolrCore.PIMSolrProductCollection)
             {
                 try
                 {
-                    if (solrRecipeOperations == null)
-                    {
-                        var connectionFactory = new SolrConnectionFactory(isCloundMode, zookeeperConnectionString, userName, password); 
-                        connectionFactory.AddIndex<SolrRecipeItem>(RecipeSolrCollection);
-                        connectionFactory.Start<SolrRecipeItem>();
-
-                        solrRecipeOperations = connectionFactory.Resolve<ISolrOperations<SolrRecipeItem>>();
-                    }
+                    return SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrProduct>>();
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    Debug.WriteLine($"Solr.Dup init error in GetSolrRecipeOperations() error [{ex.ToString()}]");
+                    Debug.WriteLine($"Solr init in GetSolrProductOperations() due to error [{e.ToString()}]");
+
+
+                    var connectionFactory = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
+                    connectionFactory.AddIndex<SolrProduct>(Config.PIMSolrProductCollection);
+                    connectionFactory.Start<SolrProduct>();
+                    SolrConnections.SolrProductConnection = connectionFactory;
+                    return connectionFactory.Resolve<ISolrOperations<SolrProduct>>();
+
                 }
             }
             else
             {
-                Debug.WriteLine("Solr.Dup Core requested has not been implemented " + core);
+                Debug.WriteLine("Solr Core requested has not been implemented " + core);
+                throw new NotImplementedException("Solr Core requested has not been implemented " + core);
+            }
+        }
+        public static ISolrOperations<SolrRecipeItem> GetSolrRecipeOperations(string core)
+        {
+            if (core == PIMSolrCore.PIMSolrRecipeItemsCollection)
+            {
+                try
+                {
+                    return SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrRecipeItem>>();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Solr init in GetSolrRecipeOperations() due to error [{e.ToString()}]");
+
+
+                    var connectionFactory = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
+                    connectionFactory.AddIndex<SolrRecipeItem>(Config.PIMSolrRecipeItemsCollection);
+                    connectionFactory.Start<SolrRecipeItem>();
+                    SolrConnections.SolrProductConnection = connectionFactory;
+                    return connectionFactory.Resolve<ISolrOperations<SolrRecipeItem>>();
+
+                }
+            }
+            else
+            {
+                Debug.WriteLine("Solr Core requested has not been implemented " + core);
                 throw new NotImplementedException("Solr.Dup Core requested has not been implemented " + core);
             }
-            return solrRecipeOperations;
         }
 
-        internal static SolrQueryExecuter<T> GetSolrSuggestExecuter(string core)
+        public static SolrQueryExecuter<T> GetSolrSuggestExecuter(string core)
         {
-            ///TODO: This method is probably not used
-            ///will need to be removed
-            if (core == RecipeSolrCollection)
+            if (core == recipeCollection)
             {
+                try
+                {
+                    return SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrRecipeItem>>() as SolrQueryExecuter<T>; ;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Solr init in GetSolrRecipeExecuter() due to error [{e.ToString()}]");
 
-                var connectionFactory = new SolrConnectionFactory(isCloundMode, zookeeperConnectionString, userName, password); 
-                connectionFactory.AddIndex<SolrRecipeItem>(RecipeSolrCollection);
-                connectionFactory.Start<SolrRecipeItem>();
 
-                var solrOperations = connectionFactory.Resolve<ISolrOperations<SolrRecipeItem>>();
+                    var connectionFactory = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
+                    connectionFactory.AddIndex<SolrRecipeItem>(Config.PIMSolrRecipeItemsCollection);
+                    connectionFactory.Start<SolrRecipeItem>();
+                    SolrConnections.SolrProductConnection = connectionFactory;
+                    return connectionFactory.Resolve<ISolrOperations<SolrRecipeItem>>() as SolrQueryExecuter<T>; ;
 
-                return solrOperations as SolrQueryExecuter<T>;
+                }
             }
             else
             {
-                var connectionFactory = new SolrConnectionFactory(isCloundMode, zookeeperConnectionString, userName, password); 
-                connectionFactory.AddIndex<SolrProduct>(ProductSolrCollection);
-                connectionFactory.Start<SolrProduct>();
+                try
+                {
+                    return SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrProduct>>() as SolrQueryExecuter<T>; ;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Solr init in GetSolrProductExecuter() due to error [{e.ToString()}]");
 
-                var solrOperations = connectionFactory.Resolve<ISolrOperations<SolrProduct>>();
 
-                return solrOperations as SolrQueryExecuter<T>;
+                    var connectionFactory = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
+                    connectionFactory.AddIndex<SolrProduct>(Config.PIMSolrProductCollection);
+                    connectionFactory.Start<SolrProduct>();
+                    SolrConnections.SolrProductConnection = connectionFactory;
+                    return connectionFactory.Resolve<ISolrOperations<SolrProduct>>() as SolrQueryExecuter<T>; ;
+
+                }
             }
-
-
         }
     }
 }
