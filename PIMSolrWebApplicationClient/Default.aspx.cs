@@ -79,12 +79,20 @@ namespace SolrWebApplicationClient
                 Response.Write($"Product Solr docs count: {results.Count}");
             }
 
-            var solrOps2 = SolrConnections.SolrRecipeConnection.Resolve<ISolrOperations<SolrRecipeItem>>();
-            var results2 = solrOps2.Query(new SolrQueryByField("description", "rose"));
+            
+            //var solrOps2 = SolrConnections.SolrRecipeConnection.Resolve<ISolrOperations<SolrRecipeItem>>();
+            var solrOps2 = PIMSolrOperationsCache<SolrRecipeItem>.GetSolrOperations(PIMSolrCore.PIMSolrRecipeItemsCollection);
+
+            var results2 = solrOps2.Query(new SolrQueryByField("id", "1"));
             if (results2 != null)
             {
                 Response.Write($"RecipeItem Solr docs count: {results2.Count}");
             }
+
+            //index
+
+            //solrOps1.Add();
+            //solrOps2.Add();
         }
     }
     public class IndexItem2 : ISearchableDocument
