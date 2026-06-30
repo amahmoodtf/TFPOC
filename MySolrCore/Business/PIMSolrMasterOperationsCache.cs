@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Net;
 namespace MySolrCore
 {
-    public static class SPIMolrMasterOperationsCache //<T> where T : new()
+    public static class PIMSolrMasterOperationsCache //<T> where T : new()
     {        
         public static ISolrOperations<SolrIndexProduct> GetSolrMasterProductOperations(string core)
         {           
@@ -19,7 +19,7 @@ namespace MySolrCore
             {
                 try
                 {
-                    return SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrIndexProduct>>();
+                    return SolrConnections.SolrIndexProductConnection.Resolve<ISolrOperations<SolrIndexProduct>>();
                 }
                 catch (Exception e )
                 {
@@ -29,7 +29,8 @@ namespace MySolrCore
                     var connectionFactory = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
                     connectionFactory.AddIndex<SolrIndexProduct>(Config.PIMSolrProductCollection);
                     connectionFactory.Start<SolrIndexProduct>();
-                    SolrConnections.SolrProductConnection = connectionFactory;
+                    SolrConnections.SolrIndexProductConnection = connectionFactory;
+                    //return connectionFactory as ISolrOperations<SolrIndexProduct>;
                     return connectionFactory.Resolve<ISolrOperations<SolrIndexProduct>>();
 
                 }
@@ -52,7 +53,7 @@ namespace MySolrCore
             {
                 try
                 {
-                    return SolrConnections.SolrProductConnection.Resolve<ISolrOperations<SolrIndexRecipeItem>>();
+                    return SolrConnections.SolrIndexRecipeItemsConnection.Resolve<ISolrOperations<SolrIndexRecipeItem>>();
                 }
                 catch (Exception e)
                 {
@@ -62,7 +63,7 @@ namespace MySolrCore
                     var connectionFactory = new SolrConnectionFactory(Config.SolrCloudModeEnabled, Config.SolrZooKeeperConnectionString, Config.SolrUserName, Config.SolrPassword);
                     connectionFactory.AddIndex<SolrIndexRecipeItem>(Config.PIMSolrRecipeItemsCollection);
                     connectionFactory.Start<SolrIndexRecipeItem>();
-                    SolrConnections.SolrProductConnection = connectionFactory;
+                    SolrConnections.SolrIndexRecipeItemsConnection = connectionFactory;
                     return connectionFactory.Resolve<ISolrOperations<SolrIndexRecipeItem>>();
 
                 }
